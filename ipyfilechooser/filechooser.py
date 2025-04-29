@@ -431,6 +431,17 @@ class FileChooser(VBox, ValueWidget):
         self.refresh()
 
     @property
+    def select_default(self) -> bool:
+        """Get _select_default value."""
+        return self._select_default
+
+    @select_default.setter
+    def select_default(self, select_default: bool) -> None:
+        """Set _select_default value."""
+        self._select_default = select_default
+        self.refresh()
+
+    @property
     def dir_icon(self) -> Optional[str]:
         """Get dir icon value."""
         return self._dir_icon
