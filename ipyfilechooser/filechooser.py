@@ -3,16 +3,19 @@ import warnings
 from typing import Optional, Sequence, Mapping, Callable
 from ipywidgets import Dropdown, Text, Select, Button, HTML
 from ipywidgets import Layout, GridBox, Box, HBox, VBox, ValueWidget
+from traitlets import HasTraits, Unicode
 from .errors import ParentPathError, InvalidFileNameError
 from .utils import get_subpaths, get_dir_contents, match_item, strip_parent_path
 from .utils import is_valid_filename, get_drive_letters, normalize_path, has_parent_path
 
 
-class FileChooser(VBox, ValueWidget):
+class FileChooser(VBox, ValueWidget, HasTraits):
     """FileChooser class."""
 
     _LBL_TEMPLATE = '<span style="color:{1};">{0}</span>'
     _LBL_NOFILE = 'No selection'
+
+    value = Unicode('', help="The selected path + filename")
 
     def __init__(
             self,
@@ -342,6 +345,7 @@ class FileChooser(VBox, ValueWidget):
 
         if ((self._selected_path is not None) and (self._selected_filename is not None)):
             selected = os.path.join(self._selected_path, self._selected_filename)
+            self.value = selected
             self._gb.layout.display = 'none'
             self._cancel.layout.display = 'none'
             self._select.description = self._change_desc
@@ -581,11 +585,6 @@ class FileChooser(VBox, ValueWidget):
         self.refresh()
 
     @property
-    def value(self) -> Optional[str]:
-        """Get selected value."""
-        return self.selected
-
-    @property
     def selected(self) -> Optional[str]:
         """Get selected value."""
         selected = None
@@ -637,4 +636,4 @@ class FileChooser(VBox, ValueWidget):
 
     def get_interact_value(self) -> Optional[str]:
         """Return the value which should be passed to interactive functions."""
-        return self.selected
+        return self.value
